@@ -1,0 +1,17 @@
+
+Authentication Setup:
+
+1. Token Auth Enabled:
+   - 'rest_framework.authtoken' is added to INSTALLED_APPS
+   - Token authentication added to DEFAULT_AUTHENTICATION_CLASSES in settings.py
+
+2. Generate tokens for users:
+   Run:
+       python manage.py drf_create_token <username>
+
+3. Include the token in your API requests:
+   Header:
+       Authorization: Token <your-token>
+
+4. Example request with curl:
+   curl -H "Authorization: Token <your-token>" http://127.0.0.1:8000/api/books_all/
