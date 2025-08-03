@@ -1,0 +1,71 @@
+
+# Django REST Framework API Project - Task Summary
+
+## ✅ Task 0: Setting Up a New Django Project with DRF
+
+- Created a new Django project named `api_project`
+- Installed Django and Django REST Framework (`djangorestframework`)
+- Added `'rest_framework'` and `'api'` to `INSTALLED_APPS` in `settings.py`
+- Created a Django app named `api`
+- Defined a simple `Book` model in `api/models.py` with `title` and `author` fields
+- Ran `makemigrations` and `migrate` to apply changes
+- Ran development server to confirm setup
+
+---
+
+## ✅ Task 1: Building Your First API Endpoint
+
+- Created `BookSerializer` in `api/serializers.py` using `ModelSerializer`
+- Created `BookList` view in `api/views.py` using `ListAPIView`
+- Defined `queryset` and `serializer_class` for the view
+- Configured `api/urls.py` with route to `/api/books/`
+- Included `api.urls` in main `api_project/urls.py`
+- Tested endpoint to list all books
+
+---
+
+## ✅ Task 2: Implementing CRUD Operations with ViewSets and Routers
+
+- Added `BookViewSet` in `api/views.py` extending `ModelViewSet`
+- Registered the viewset using DRF’s `DefaultRouter`
+- Updated `api/urls.py` to include router URLs
+- Verified endpoints for:
+  - GET `/books_all/` — list books
+  - POST `/books_all/` — create book
+  - GET `/books_all/<id>/` — retrieve book
+  - PUT `/books_all/<id>/` — update book
+  - DELETE `/books_all/<id>/` — delete book
+
+---
+
+## ✅ Task 3: Implementing Authentication and Permissions
+
+- Added `'rest_framework.authtoken'` to `INSTALLED_APPS`
+- Configured `REST_FRAMEWORK` settings to use:
+  - `TokenAuthentication` in `DEFAULT_AUTHENTICATION_CLASSES`
+  - `IsAuthenticated` in `DEFAULT_PERMISSION_CLASSES`
+- Added `permission_classes = [IsAuthenticated]` to `BookViewSet`
+- Added token authentication endpoint via `obtain_auth_token` at `/api-token-auth/`
+- Documented authentication usage in `AUTH_INFO.txt`
+
+---
+
+## 📝 Notes:
+
+- To test token authentication, run:
+  ```bash
+  python manage.py createsuperuser
+  python manage.py drf_create_token <username>
+  ```
+
+- Add token to header when accessing secured endpoints:
+  ```http
+  Authorization: Token <your-token>
+  ```
+
+---
+
+Project Directory: `api_project`
+Repository: `Alx_DjangoLearnLab`
+
+Great job completing all the tasks! 🎉
