@@ -6,7 +6,6 @@ class NestedBookSerializer(serializers.ModelSerializer):
         model = Book
         fields = ['id','title','publication_year']
 class BookSerializer(serializers.ModelSerializer):
-    """Book serializer with validation for publication_year; author passed as PK."""
     class Meta:
         model = Book
         fields = ['id','title','publication_year','author']
@@ -16,7 +15,6 @@ class BookSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('publication_year cannot be in the future.')
         return value
 class AuthorSerializer(serializers.ModelSerializer):
-    """Author serializer with nested read-only books and writable name field."""
     books = NestedBookSerializer(many=True, read_only=True)
     class Meta:
         model = Author
