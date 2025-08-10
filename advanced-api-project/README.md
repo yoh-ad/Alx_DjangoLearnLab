@@ -1,52 +1,29 @@
-# Advanced API Project (ALX DjangoLearnLab)
+# Advanced API Project (Corrected)
 
-This is a completed starter implementation for the **Advanced API Development with Django REST Framework** project.
-It includes:
-- Django project and `api` app
-- `Author` and `Book` models
-- Custom serializers with nested relationships and validation
-- Generic views (List/Create, Retrieve/Update/Delete)
-- Filtering, Searching, Ordering (DRF + django-filter)
-- Permissions (authenticated users can create/update/delete; read-only for unauthenticated)
-- Unit tests in `api/test_views.py`
-- `requirements.txt` listing needed packages
+This implementation completes **all tasks (0-3)** for the ALX project:
+- Custom serializers (with nested representation and validation)
+- Custom and generic views (with overridden create/update behavior)
+- Filtering, searching and ordering (with a dedicated FilterSet)
+- Permissions: authenticated users can create/update/delete; read-only for unauthenticated
+- Unit tests for Books and Authors covering CRUD, permissions, validation, filtering/searching/ordering
 
-## How to run locally
+Run locally:
+1. python -m venv venv
+2. source venv/bin/activate    # or venv\Scripts\activate on Windows
+3. pip install -r requirements.txt
+4. python manage.py migrate
+5. python manage.py createsuperuser   # optional
+6. python manage.py runserver
+7. python manage.py test api
 
-1. Create a virtual environment and activate it:
-```bash
-python -m venv venv
-source venv/bin/activate   # on Windows use venv\Scripts\activate
-```
-
-2. Install requirements:
-```bash
-pip install -r requirements.txt
-```
-
-3. Apply migrations:
-```bash
-python manage.py migrate
-```
-
-4. Create a superuser (optional, to use admin):
-```bash
-python manage.py createsuperuser
-```
-
-5. Run the server:
-```bash
-python manage.py runserver
-```
-
-API endpoints:
-- `GET /api/books/` - list books (supports filtering, searching, ordering)
-- `POST /api/books/` - create book (authenticated)
-- `GET /api/books/<id>/` - retrieve book
-- `PUT /api/books/<id>/` - update book (authenticated)
-- `DELETE /api/books/<id>/` - delete book (authenticated)
-
-Run tests:
-```bash
-python manage.py test api
-```
+Endpoints:
+- GET  /api/books/                (list, supports filter/search/order)
+- POST /api/books/                (create, auth required)
+- GET  /api/books/<id>/           (retrieve)
+- PUT  /api/books/<id>/           (update, auth required)
+- DELETE /api/books/<id>/         (delete, auth required)
+- GET  /api/authors/              (list)
+- POST /api/authors/              (create, auth required)
+- GET  /api/authors/<id>/         (retrieve with nested books)
+- PUT  /api/authors/<id>/         (update, auth required)
+- DELETE /api/authors/<id>/       (delete, auth required)
