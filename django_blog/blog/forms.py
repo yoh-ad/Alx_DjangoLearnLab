@@ -16,19 +16,21 @@ class ProfileForm(forms.ModelForm):
         fields = ("first_name", "last_name", "email")
 
 class PostForm(forms.ModelForm):
-    tags_csv = forms.CharField(
+    # Expose existing tags for selection
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
         required=False,
-        help_text="Comma-separated tags (e.g., django, web, tutorial)"
+        widget=forms.CheckboxSelectMultiple
+    )
+    # Allow creating new tags from comma-separated text
+    new_tags = forms.CharField(
+        required=False,
+        help_text="Add new tags (comma-separated)"
     )
 
     class Meta:
         model = Post
-        fields = ("title", "content", "tags_csv")
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if self.instance.pk:
-            self.fields['tags_csv'].initial = ", ".join(t.name for t in self.instance.tags.all())
+        fields = ("title", "content", "tags", "new_tags")
 
     def save(self, author=None, commit=True):
         post = super().save(commit=False)
@@ -36,14 +38,18 @@ class PostForm(forms.ModelForm):
             post.author = author
         if commit:
             post.save()
-        # handle tags
-        tags_csv = self.cleaned_data.get("tags_csv", "")
-        names = [t.strip() for t in tags_csv.split(",") if t.strip()]
-        tag_objs = []
-        for name in names:
+
+        # Existing selected tags
+        selected_tags = list(self.cleaned_data.get("tags", []))
+
+        # Create any new tags
+        fresh = []
+        for name in [t.strip() for t in self.cleaned_data.get("new_tags", "").split(",") if t.strip()]:
             tag, _ = Tag.objects.get_or_create(name=name)
-            tag_objs.append(tag)
-        post.tags.set(tag_objs)
+            fresh.append(tag)
+
+        # Assign union of both sets
+        post.tags.set(list({*selected_tags, *fresh}))
         if commit:
             post.save()
         return post

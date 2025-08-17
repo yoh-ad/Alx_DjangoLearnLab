@@ -128,8 +128,16 @@ class PostsByTagView(ListView):
     context_object_name = 'posts'
 
     def get_queryset(self):
-        self.tag = get_object_or_404(Tag, slug=self.kwargs['slug'])
+        tag_name = self.kwargs['tag_name']
+        self.tag = Tag.objects.filter(name__iexact=tag_name).first()
+        if not self.tag:
+            return Post.objects.none()
         return Post.objects.filter(tags=self.tag)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['tag'] = self.tag
+        return ctx
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -143,7 +151,7 @@ class SearchResultsView(ListView):
     context_object_name = 'results'
 
     def get_queryset(self):
-        q = self.request.GET.get('q', '')
+        q = self.request.GET.get('q') or self.request.GET.get('query') or ''
         return Post.objects.filter(
             Q(title__icontains=q) | Q(content__icontains=q) | Q(tags__name__icontains=q)
         ).distinct()
