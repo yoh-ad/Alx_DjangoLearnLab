@@ -63,8 +63,8 @@ class PostDeleteView(LoginRequiredMixin, AuthorRequiredMixin, DeleteView):
 
 # Comments
 class CommentCreateView(LoginRequiredMixin, View):
-    def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
+    def post(self, request, post_id):
+        post = get_object_or_404(Post, pk=post_id)
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
@@ -74,7 +74,7 @@ class CommentCreateView(LoginRequiredMixin, View):
             messages.success(request, "Comment added.")
         else:
             messages.error(request, "Please correct the error below.")
-        return redirect('post_detail', pk=pk)
+        return redirect('post_detail', pk=post_id)
 
 class CommentAuthorRequiredMixin(UserPassesTestMixin):
     def test_func(self):
@@ -86,12 +86,21 @@ class CommentUpdateView(LoginRequiredMixin, CommentAuthorRequiredMixin, UpdateVi
     form_class = CommentForm
     template_name = 'blog/comment_form.html'
 
+    def get_queryset(self):
+        # ensure nested URL post_id matches the comment's post
+        post_id = self.kwargs.get('post_id')
+        return Comment.objects.filter(post_id=post_id)
+
     def get_success_url(self):
         return reverse('post_detail', kwargs={'pk': self.object.post.pk})
 
 class CommentDeleteView(LoginRequiredMixin, CommentAuthorRequiredMixin, DeleteView):
     model = Comment
     template_name = 'blog/comment_confirm_delete.html'
+
+    def get_queryset(self):
+        post_id = self.kwargs.get('post_id')
+        return Comment.objects.filter(post_id=post_id)
 
     def get_success_url(self):
         return reverse('post_detail', kwargs={'pk': self.object.post.pk})
